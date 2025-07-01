@@ -1,0 +1,36 @@
+type: 'library'
+language: 'typescript'
+
+project:
+  name: 'multitools'
+  description: 'A TypeScript utility library built with Bun'
+
+tasks:
+  build:
+    command: 'bun build ./src/index.ts --outdir ./dist --target bun'
+    inputs:
+      - 'src/**/*'
+      - 'package.json'
+      - 'tsconfig.json'
+    outputs:
+      - 'dist'
+
+  dev:
+    command: 'bun run --watch src/index.ts'
+    inputs:
+      - 'src/**/*'
+
+  type-check:
+    command: 'bun tsc --noEmit'
+    inputs:
+      - 'src/**/*'
+      - 'tsconfig.json'
+
+  test:
+    command: 'bun test'
+    inputs:
+      - 'src/**/*'
+      - 'test/**/*'
+
+  clean:
+    command: 'rm -rf dist' 

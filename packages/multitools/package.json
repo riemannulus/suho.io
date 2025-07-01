@@ -1,0 +1,38 @@
+{
+  "name": "@suho/multitools",
+  "version": "0.1.0",
+  "description": "A TypeScript utility library built with Bun",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target bun && bun tsc --emitDeclarationOnly --outDir dist",
+    "dev": "bun run --watch src/index.ts",
+    "test": "bun test",
+    "type-check": "bun tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "utilities",
+    "typescript",
+    "bun"
+  ],
+  "author": "suho",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/bun": "^1.2.17",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "typescript": ">=5.0.0"
+  }
+}
