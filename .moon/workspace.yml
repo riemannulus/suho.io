@@ -4,8 +4,13 @@ $schema: './cache/schemas/workspace.json'
 # extends: './shared/workspace.yml'
 
 projects:
-  - 'apps/*'
-  - 'packages/*'
+  globs:
+  - 'apps/**/moon.yml'
+  - 'packages/**/moon.yml'
+
 vcs:
   manager: 'git'
   defaultBranch: 'main'
+generator:
+  templates:
+   - 'git://github.com/riemannulus/moonrepo-templates#main'

@@ -1,6 +1,5 @@
 type: 'library'
 language: 'typescript'
-id: 'node/multitools'
 
 project:
   name: 'multitools'

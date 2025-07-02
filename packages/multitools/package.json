@@ -24,7 +24,8 @@
   "keywords": [
     "utilities",
     "typescript",
-    "bun"
+    "bun",
+    "node"
   ],
   "author": "suho",
   "license": "MIT",

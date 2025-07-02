@@ -1,0 +1,149 @@
+/* Windows 95 Style CSS */
+
+.win95-window {
+  background-color: rgb(192 192 192);
+  border-width: 2px;
+  border-color: rgb(156 163 175);
+  border-top-color: #fff;
+  border-left-color: #fff;
+  border-right-color: #808080;
+  border-bottom-color: #808080;
+  box-shadow: inset 1px 1px 0px #fff, inset -1px -1px 0px #808080;
+}
+
+.win95-title-bar {
+  background: linear-gradient(90deg, #0080c8 0%, #1040a0 100%);
+  color: white;
+  font-weight: bold;
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem;
+  margin-bottom: 0.25rem;
+  box-shadow: inset 1px 1px 0px rgba(255,255,255,0.3);
+}
+
+.win95-title {
+  color: white;
+  font-size: 0.875rem;
+  font-weight: normal;
+}
+
+.win95-button {
+  background-color: rgb(192 192 192);
+  border-width: 2px;
+  padding: 0.5rem 1rem;
+  font-weight: normal;
+  color: black;
+  cursor: pointer;
+  border-top-color: #fff;
+  border-left-color: #fff;
+  border-right-color: #808080;
+  border-bottom-color: #808080;
+  box-shadow: inset 1px 1px 0px #fff, inset -1px -1px 0px #808080;
+}
+
+.win95-button:hover {
+  background-color: rgb(229 231 235);
+}
+
+.win95-button:active {
+  border-top-color: #808080;
+  border-left-color: #808080;
+  border-right-color: #fff;
+  border-bottom-color: #fff;
+  box-shadow: inset -1px -1px 0px #fff, inset 1px 1px 0px #808080;
+}
+
+.win95-button:disabled {
+  color: rgb(107 114 128);
+  cursor: not-allowed;
+  background: #c0c0c0;
+}
+
+.win95-button-small {
+  background-color: rgb(192 192 192);
+  border-width: 2px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: normal;
+  color: black;
+  cursor: pointer;
+  border-top-color: #fff;
+  border-left-color: #fff;
+  border-right-color: #808080;
+  border-bottom-color: #808080;
+  box-shadow: inset 1px 1px 0px #fff, inset -1px -1px 0px #808080;
+}
+
+.win95-button-small:hover {
+  background-color: rgb(229 231 235);
+}
+
+.win95-button-small:active {
+  border-top-color: #808080;
+  border-left-color: #808080;
+  border-right-color: #fff;
+  border-bottom-color: #fff;
+  box-shadow: inset -1px -1px 0px #fff, inset 1px 1px 0px #808080;
+}
+
+.win95-field-sunken {
+  border-width: 2px;
+  border-top-color: #808080;
+  border-left-color: #808080;
+  border-right-color: #fff;
+  border-bottom-color: #fff;
+  box-shadow: inset -1px -1px 0px #fff, inset 1px 1px 0px #808080;
+}
+
+.win95-field-raised {
+  border-width: 2px;
+  border-top-color: #fff;
+  border-left-color: #fff;
+  border-right-color: #808080;
+  border-bottom-color: #808080;
+  box-shadow: inset 1px 1px 0px #fff, inset -1px -1px 0px #808080;
+}
+
+.win95-tool-card {
+  background-color: rgb(192 192 192);
+  border-width: 2px;
+  cursor: pointer;
+  transition: all 0.1s;
+  border-top-color: #fff;
+  border-left-color: #fff;
+  border-right-color: #808080;
+  border-bottom-color: #808080;
+  box-shadow: inset 1px 1px 0px #fff, inset -1px -1px 0px #808080;
+}
+
+.win95-tool-card:hover {
+  background-color: rgb(229 231 235);
+}
+
+.win95-tool-card:active {
+  border-top-color: #808080;
+  border-left-color: #808080;
+  border-right-color: #fff;
+  border-bottom-color: #fff;
+  box-shadow: inset -1px -1px 0px #fff, inset 1px 1px 0px #808080;
+}
+
+.win95-tag {
+  background-color: rgb(209 213 219);
+  border-width: 1px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: normal;
+  border-top-color: #fff;
+  border-left-color: #fff;
+  border-right-color: #808080;
+  border-bottom-color: #808080;
+}
+
+.win95-tag.selected {
+  background-color: rgb(191 219 254);
+  border-top-color: #808080;
+  border-left-color: #808080;
+  border-right-color: #fff;
+  border-bottom-color: #fff;
+} 

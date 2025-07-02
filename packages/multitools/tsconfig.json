@@ -1,28 +1,23 @@
 {
   "compilerOptions": {
-    // Environment setup & latest features
-    "lib": ["ESNext"],
+    "lib": [
+      "ESNext"
+    ],
     "target": "ESNext",
     "module": "ESNext",
     "moduleDetection": "force",
     "jsx": "react-jsx",
     "allowJs": true,
-
-    // Bundler mode
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
-    "noEmit": true,
-
-    // Best practices
+    "composite": true,
     "strict": true,
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
-
-    // Build configuration
     "declaration": true,
     "emitDeclarationOnly": true,
-    "outDir": "./dist"
+    "outDir": "../../.moon/cache/types/packages/multitools"
   },
   "include": [
     "src/**/*",
@@ -32,4 +27,4 @@
     "node_modules",
     "dist"
   ]
-} 
+}

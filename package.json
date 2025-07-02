@@ -1,0 +1,16 @@
+{
+  "name": "suho.io",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@moonrepo/cli": "^1.33.1",
+    "@types/bun": "latest"
+  },
+  "engines": {
+    "node": "20.13.1"
+  }
+}
