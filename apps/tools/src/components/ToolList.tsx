@@ -27,11 +27,11 @@ export function ToolList({ onToolSelect }: ToolListProps) {
         {/* Header */}
         <div className="win95-window mb-6">
           <div className="win95-title-bar">
-            <span className="win95-title">Tools Collection - Web Development Utilities</span>
+            <span className="win95-title">Suho's toolbox</span>
           </div>
           <div className="p-6">
-            <h1 className="text-3xl font-bold mb-2 text-center">Tools Collection</h1>
-            <p className="text-gray-600 text-center">A collection of useful web development and crypto tools</p>
+            <h1 className="text-3xl font-bold mb-2 text-center">Suho's toolbox</h1>
+            <p className="text-gray-600 text-center">A collection of useful tools</p>
           </div>
         </div>
 

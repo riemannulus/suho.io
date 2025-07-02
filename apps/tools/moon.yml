@@ -55,4 +55,13 @@ tasks:
       - 'package.json'
       - 'bun.lock'
     outputs:
-      - 'node_modules' 
+      - 'node_modules'
+
+  new-tool:
+    command: 'moon generate new-tool'
+    description: 'Generate a new tool component with boilerplate code'
+    options:
+      interactive: true
+      runFromWorkspaceRoot: true
+    inputs:
+      - 'templates/tools/**/*'

@@ -1,21 +1,37 @@
-# bun-react-tailwind-shadcn-template
+# tools.suho.io
 
-To install dependencies:
+A collection of useful web tools for me.
 
-```bash
-bun install
-```
+## Development
 
-To start a development server:
+### Install Dependencies
 
 ```bash
-bun dev
+moon run tools:install
 ```
 
-To run for production:
+### Development Server
 
 ```bash
-bun start
+moon run tools:dev
 ```
 
-This project was created using `bun init` in bun v1.2.17. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+### Build for Production
+
+```bash
+moon run tools:build
+```
+
+### Start Production Server
+
+```bash
+moon run tools:start
+```
+
+## Add New Tool
+
+To add a new tool:
+
+```bash
+moon run tools:new-tool
+```
