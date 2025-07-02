@@ -1,0 +1,44 @@
+{% set componentName = toolId | pascal_case %}
+# Tool Registration Instructions
+
+After generating your new tool, you need to register it in the tool registry.
+
+## Step 1: Import the tool in `src/lib/tool-registry.ts`
+
+Add this import statement:
+
+```typescript
+import * as {{ toolId | camel_case }} from '../tools/{{ toolId }}';
+```
+
+## Step 2: Register the tool
+
+Add this registration code:
+
+```typescript
+registerTool({
+  id: {{ toolId | camel_case }}.metadata.id,
+  name: {{ toolId | camel_case }}.metadata.name,
+  description: {{ toolId | camel_case }}.metadata.description,
+  tags: {{ toolId | camel_case }}.metadata.tags,
+  component: {{ toolId | camel_case }}.component
+});
+```
+
+## Step 3: Test your tool
+
+1. Run the development server: `bun run dev`
+2. Navigate to `http://localhost:3000/{{ toolId }}`
+3. The tool should appear in the main tools list
+
+## Customize your tool
+
+Edit the generated `{{ componentName }}.tsx` file to implement your tool's specific functionality.
+
+The basic template includes:
+- Windows 95 styled UI components
+- Loading state management
+- Error handling structure
+- Result display area
+
+Happy coding! 🚀 

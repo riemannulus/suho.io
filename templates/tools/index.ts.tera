@@ -1,0 +1,12 @@
+{% set componentName = toolId | pascal_case %}
+import type { ToolMetadata } from '@/lib/tool-types';
+import { {{ componentName }} } from './{{ componentName }}';
+
+export const metadata: ToolMetadata = {
+  id: '{{ toolId }}',
+  name: '{{ toolName }}',
+  description: '{{ toolDescription }}',
+  tags: [{% for tag in tags %}'{{ tag | upper_case }}'{% if not loop.last %}, {% endif %}{% endfor %}]
+};
+
+export { {{ componentName }} as component }; 

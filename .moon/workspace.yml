@@ -13,4 +13,5 @@ vcs:
   defaultBranch: 'main'
 generator:
   templates:
+   - './templates'
    - 'git://github.com/riemannulus/moonrepo-templates#main'

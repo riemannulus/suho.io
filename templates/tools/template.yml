@@ -1,0 +1,30 @@
+$schema: 'https://moonrepo.dev/schemas/template.json'
+
+id: 'new-tool'
+title: 'New Tool Component'
+description: |
+  Scaffolds a new tool component with metadata for the tools web app.
+  Creates both the React component and the registration metadata.
+
+destination: 'apps/tools/src/tools/{{ toolId }}'
+
+variables:
+  toolId:
+    type: 'string'
+    required: true
+    prompt: 'Tool ID (kebab-case, e.g., "my-awesome-tool")?'
+    
+  toolName:
+    type: 'string'
+    required: true
+    prompt: 'Tool display name (e.g., "My Awesome Tool")?'
+    
+  toolDescription:
+    type: 'string'
+    required: true
+    prompt: 'Tool description?'
+    
+  tags:
+    type: 'array'
+    required: true
+    prompt: 'Tags (comma-separated, e.g., "UTILITY,GENERATOR")?' 

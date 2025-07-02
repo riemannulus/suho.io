@@ -1,0 +1,66 @@
+{% set componentName = toolId | pascal_case %}
+---
+to: {{ componentName }}.tsx
+---
+import { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+
+export function {{ componentName }}() {
+  const [result, setResult] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleAction = async () => {
+    setIsLoading(true);
+    
+    try {
+      // TODO: Implement your tool's main functionality here
+      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate async operation
+      setResult('Tool executed successfully!');
+    } catch (error) {
+      setResult('Error occurred: ' + (error instanceof Error ? error.message : 'Unknown error'));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-300 p-4">
+      <div className="max-w-2xl mx-auto">
+        <Card className="win95-window">
+          <div className="win95-title-bar">
+            <span className="win95-title">{{ toolName }} - {{ toolDescription }}</span>
+          </div>
+          <CardContent className="p-6">
+            <div className="text-center mb-6">
+              <h1 className="text-2xl font-bold mb-2">{{ toolName }}</h1>
+              <p className="text-gray-600">{{ toolDescription }}</p>
+            </div>
+
+            <div className="text-center mb-6">
+              <Button 
+                onClick={handleAction} 
+                disabled={isLoading}
+                className="win95-button"
+              >
+                {isLoading ? 'Processing...' : 'Execute Tool'}
+              </Button>
+            </div>
+
+            {result && (
+              <div className="win95-field-sunken p-4 bg-white">
+                <div className="font-mono text-sm">
+                  {result}
+                </div>
+              </div>
+            )}
+
+            <div className="mt-6 text-center text-sm text-gray-500">
+              <p>This is a generated tool template. Customize the functionality as needed.</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+} 
