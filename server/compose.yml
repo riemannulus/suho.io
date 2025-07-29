@@ -17,3 +17,7 @@ include:
   # Root service configurations
   - path: ./root/dev.yml
   - path: ./root/prod.yml
+
+  # Gunthy service configurations
+  - path: ./gunthy/dev.yml
+  - path: ./gunthy/prod.yml

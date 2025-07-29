@@ -1,0 +1,21 @@
+# Gunthy production configuration
+services:
+  gunthy-prod:
+    image: ${DOCKER_USERNAME:-riemannulus}/gunthy:${GUNTHY_IMAGE_TAG:-latest}
+    container_name: gunthy-prod
+    restart: unless-stopped
+    environment:
+      - USE_PM2=true
+    networks:
+      - web
+    volumes:
+      - ./gunthy_data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gunthy.rule=Host(`gunthy.${DOMAIN}`)"
+      - "traefik.http.routers.gunthy.entrypoints=websecure"
+      - "traefik.http.routers.gunthy.tls=true"
+      - "traefik.http.routers.gunthy.tls.certresolver=letsencrypt"
+      - "traefik.http.services.gunthy.loadbalancer.server.port=3001"
+    profiles:
+      - prod
