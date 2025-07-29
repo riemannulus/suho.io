@@ -13,3 +13,7 @@ include:
   # Tools service configurations
   - path: ./tools/dev.yml
   - path: ./tools/prod.yml
+  
+  # Root service configurations
+  - path: ./root/dev.yml
+  - path: ./root/prod.yml

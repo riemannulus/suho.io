@@ -1,0 +1,81 @@
+# {{ appName | pascal_case }} development configuration
+services:
+  {{ appName }}-dev:
+    build:
+      context: ../..
+      dockerfile: apps/{{ appName }}/Dockerfile
+    container_name: {{ appName }}-dev
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+{%- if needsDatabase %}
+      - DATABASE_URL=postgresql://postgres:postgres@{{ appName }}-db-dev:5432/{{ appName | snake_case }}
+{%- endif %}
+{%- if needsRedis %}
+      - REDIS_URL=redis://{{ appName }}-redis-dev:6379
+{%- endif %}
+    networks:
+      - web
+{%- if needsDatabase or needsRedis %}
+      - {{ appName }}
+{%- endif %}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.{{ appName }}.rule=Host(`{{ appName }}.localhost`)"
+      - "traefik.http.routers.{{ appName }}.entrypoints=web"
+      - "traefik.http.services.{{ appName }}.loadbalancer.server.port={{ port }}"
+    profiles:
+      - dev
+{%- if needsDatabase or needsRedis %}
+    depends_on:
+{%- if needsDatabase %}
+      - {{ appName }}-db-dev
+{%- endif %}
+{%- if needsRedis %}
+      - {{ appName }}-redis-dev
+{%- endif %}
+{%- endif %}
+
+{%- if needsDatabase %}
+  {{ appName }}-db-dev:
+    image: postgres:16-alpine
+    container_name: {{ appName }}-db-dev
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB={{ appName | snake_case }}
+    volumes:
+      - {{ appName }}_db_dev:/var/lib/postgresql/data
+    networks:
+      - {{ appName }}
+    profiles:
+      - dev
+{%- endif %}
+
+{%- if needsRedis %}
+  {{ appName }}-redis-dev:
+    image: redis:7-alpine
+    container_name: {{ appName }}-redis-dev
+    restart: unless-stopped
+    volumes:
+      - {{ appName }}_redis_dev:/data
+    networks:
+      - {{ appName }}
+    profiles:
+      - dev
+{%- endif %}
+
+{%- if needsDatabase or needsRedis %}
+networks:
+  {{ appName }}:
+    driver: bridge
+
+volumes:
+{%- if needsDatabase %}
+  {{ appName }}_db_dev:
+{%- endif %}
+{%- if needsRedis %}
+  {{ appName }}_redis_dev:
+{%- endif %}
+{%- endif %}

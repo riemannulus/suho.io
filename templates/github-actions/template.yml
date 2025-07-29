@@ -1,0 +1,45 @@
+$schema: 'https://moonrepo.dev/schemas/template.json'
+
+id: 'github-actions'
+title: 'New App GitHub Actions Workflow'
+description: |
+  Scaffolds a GitHub Actions workflow for building and deploying a new app.
+  Creates a CI/CD pipeline that builds Docker images and deploys to dev/prod environments.
+
+destination: '.github/workflows'
+
+variables:
+  appName:
+    type: 'string'
+    required: true
+    prompt: 'App name (kebab-case, e.g., "my-app")?'
+    
+  appPath:
+    type: 'string'
+    required: true
+    prompt: 'App path relative to root (e.g., "apps/my-app")?'
+    default: 'apps/{{ appName }}'
+    
+  imageName:
+    type: 'string'
+    required: true
+    prompt: 'Docker image name (e.g., "suho-my-app")?'
+    default: 'suho-{{ appName }}'
+    
+  dockerfilePath:
+    type: 'string'
+    required: false
+    prompt: 'Dockerfile path relative to app directory?'
+    default: 'Dockerfile'
+    
+  hasTests:
+    type: 'boolean'
+    required: false
+    prompt: 'Does this app have tests?'
+    default: true
+    
+  needsPackages:
+    type: 'boolean'
+    required: false
+    prompt: 'Does this app depend on workspace packages?'
+    default: true

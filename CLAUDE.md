@@ -59,8 +59,12 @@ suho.io/
 │       └── moon.yml        # Moon task configuration
 ├── packages/
 │   └── multitools/         # Shared utility library
-└── templates/
-    └── tools/              # Tool generation templates
+├── templates/
+│   ├── tools/              # Tool generation templates
+│   ├── github-actions/     # GitHub Actions workflow templates
+│   └── docker-compose-service/ # Docker Compose service templates
+└── .github/
+    └── workflows/          # GitHub Actions CI/CD workflows
 ```
 
 ### Adding New Tools
@@ -89,6 +93,100 @@ Tools are self-contained React components registered in the tool registry:
 - Add new tool: `moon run tools:new-tool` (interactive generator)
 - Type checking: `moon run tools:type-check`
 - Clean build: `moon run tools:clean`
+- **Add new app CI/CD**: `moon generate github-actions` (generates GitHub Actions workflow)
+- **Add new Docker service**: `moon generate docker-compose-service` (generates Docker Compose configs)
+
+## Docker Compose Setup
+
+The repository includes a modular Docker Compose setup with Traefik as a reverse proxy:
+
+### Structure
+
+```
+compose.yml                  # Root compose file
+server/
+├── compose.yml             # Main server compose that includes all services
+├── common/                 # Common resources
+│   ├── networks.yml        # Network definitions
+│   └── volumes.yml         # Volume definitions
+├── traefik/                # Traefik service directory
+│   ├── dev.yml             # Development profile (HTTP)
+│   └── prod.yml            # Production profile (HTTPS + Let's Encrypt)
+└── tools/                  # Tools application directory
+    ├── dev.yml             # Development profile
+    └── prod.yml            # Production profile
+```
+
+### Docker Commands
+
+- **Development**: `docker compose --profile dev up -d` (HTTP-only for local development)
+- **Production**: `docker compose --profile prod up -d` (HTTPS with Let's Encrypt)
+- **Stop services**: `docker compose --profile <dev|prod> down`
+- **View logs**: `docker compose logs -f <service-name>`
+
+### Prerequisites
+
+1. Create external Docker network: `docker network create web`
+2. For production, configure `.env` file with:
+   - `DOMAIN=yourdomain.com`
+   - `LETSENCRYPT_EMAIL=your-email@example.com`
+   - `TRAEFIK_AUTH=<basic-auth-string>`
+
+### Adding New Services
+
+When adding new services, use Moon's code generation:
+1. Run `moon run :new-compose-service` to generate Docker Compose configs
+2. The generator will create `server/<service-name>/dev.yml` and `prod.yml`
+3. Include the service files in `server/compose.yml`
+4. Run `moon run :new-app-workflow` to create the CI/CD pipeline
+
+## GitOps CD Pipeline
+
+The repository uses GitHub Actions for continuous deployment:
+
+### CI/CD Architecture
+- **Reusable workflows**: `_docker-build.yml` for Docker image building
+- **App workflows**: Generated via `moon run :new-app-workflow`
+- **Infrastructure deployment**: `deploy-infrastructure.yml` for Docker Compose
+- **GitOps sync**: Hourly sync between Git and deployment server
+
+### Deployment Flow
+1. **Development** (`develop` branch):
+   - Builds Docker images with `develop-<sha>` tags
+   - Deploys using `docker compose --profile dev`
+   - HTTP-only access via Traefik
+
+2. **Production** (`main` branch):
+   - Builds Docker images with `latest` and semantic version tags
+   - Deploys using `docker compose --profile prod`
+   - HTTPS with Let's Encrypt certificates
+
+### Required GitHub Secrets
+```
+DOCKER_USERNAME      # Docker Hub username
+DOCKER_PASSWORD      # Docker Hub password/token
+DEPLOY_HOST         # Deployment server hostname
+DEPLOY_USER         # SSH username
+DEPLOY_SSH_KEY      # SSH private key
+DEPLOY_PATH         # Repository path on server
+DOMAIN              # Production domain
+LETSENCRYPT_EMAIL   # Email for SSL certificates
+TRAEFIK_AUTH        # Basic auth for Traefik dashboard
+```
+
+### Adding a New App with CI/CD
+```bash
+# 1. Generate GitHub Actions workflow
+moon generate github-actions
+# Follow prompts: app name, path, Docker image name, etc.
+
+# 2. Generate Docker Compose service
+moon generate docker-compose-service
+# Follow prompts: service config, database needs, etc.
+
+# 3. Update server/compose.yml to include new service
+# 4. Commit and push - CI/CD will handle the rest
+```
 
 ## Important Notes
 - The tools app has an existing CLAUDE.md at `apps/tools/CLAUDE.md` with Bun-specific guidance

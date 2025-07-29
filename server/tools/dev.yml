@@ -4,7 +4,7 @@ services:
     build:
       context: ../..
       dockerfile: apps/tools/Dockerfile
-    container_name: tools
+    container_name: tools-dev
     restart: unless-stopped
     environment:
       - NODE_ENV=development

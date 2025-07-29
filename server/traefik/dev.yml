@@ -29,6 +29,6 @@ services:
       - "traefik.http.routers.traefik.service=api@internal"
       - "traefik.http.routers.traefik.entrypoints=web"
       - "traefik.http.routers.traefik.middlewares=auth"
-      - "traefik.http.middlewares.auth.basicauth.users=admin:$$2y$$10$$8kVmO8Y9KwKHH9oD5fVQEOMwoBfr0WjMnanxYxO2CIwHy0fLYpQmC"
+      - "traefik.http.middlewares.auth.basicauth.users=admin:$2y$05$4HpB4Dea5LbyWuSSJjHotuD0gtIYQ/W.apdr9KOrIc3Jyb5.I8eai"
     profiles:
       - dev

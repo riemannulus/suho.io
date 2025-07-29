@@ -1,0 +1,60 @@
+$schema: '../../.moon/cache/schemas/project.json'
+
+type: 'application'
+language: 'typescript'
+id: 'root'
+
+project:
+  name: 'suho.io'
+  description: 'A personal website built with Bun and TypeScript'
+
+tasks:
+  dev:
+    command: 'bun --hot src/index.tsx'
+    description: 'Development - full-stack dev server with hot reload'
+    inputs:
+      - 'src/**/*'
+      - 'styles/**/*'
+
+  build:
+    command: 'bun run build'
+    description: 'Static Site - build optimized assets to disk (no backend)'
+    inputs:
+      - 'src/**/*'
+      - 'styles/**/*'
+      - 'package.json'
+      - 'tsconfig.json'
+      - 'build.ts'
+    outputs:
+      - 'dist'
+
+  start:
+    command: 'bun start'
+    description: 'Production - serve a full-stack production build'
+    inputs:
+      - 'src/**/*'
+      - 'styles/**/*'
+      - 'package.json'
+
+  type-check:
+    command: 'bun tsc --noEmit'
+    inputs:
+      - 'src/**/*'
+      - 'tsconfig.json'
+
+  test:
+    command: 'bun test'
+    inputs:
+      - 'src/**/*'
+      - 'test/**/*'
+
+  clean:
+    command: 'rm -rf dist'
+
+  install:
+    command: 'bun install'
+    inputs:
+      - 'package.json'
+      - 'bun.lock'
+    outputs:
+      - 'node_modules'

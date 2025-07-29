@@ -1,10 +1,8 @@
 # Tools production configuration
 services:
   tools-prod:
-    build:
-      context: ../..
-      dockerfile: apps/tools/Dockerfile
-    container_name: tools
+    image: ${DOCKER_USERNAME:-suho}/suho-tools:${TOOLS_IMAGE_TAG:-latest}
+    container_name: tools-prod
     restart: unless-stopped
     environment:
       - NODE_ENV=production

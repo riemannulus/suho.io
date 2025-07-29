@@ -1,0 +1,55 @@
+name: GitOps Sync
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run every hour to sync any manual changes
+    - cron: '0 * * * *'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Sync with deployment server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            cd ${{ secrets.DEPLOY_PATH }}
+            
+            # Check for uncommitted changes
+            if ! git diff --quiet; then
+              echo "⚠️ Uncommitted changes detected on server:"
+              git diff --name-only
+              
+              # Stash changes
+              git stash push -m "Auto-stash before GitOps sync"
+            fi
+            
+            # Pull latest changes
+            git fetch origin
+            git reset --hard origin/$(git branch --show-current)
+            
+            # Get current environment
+            CURRENT_ENV=$(docker compose ps --format json | jq -r '.[0].Labels."com.docker.compose.profiles"' | head -1)
+            
+            if [ -z "$CURRENT_ENV" ]; then
+              echo "⚠️ No active profile detected"
+              exit 0
+            fi
+            
+            echo "📦 Current environment: $CURRENT_ENV"
+            
+            # Recreate containers with latest configuration
+            docker compose --profile $CURRENT_ENV up -d --force-recreate
+            
+            # Prune unused images
+            docker image prune -f
+            
+            echo "✅ GitOps sync completed"

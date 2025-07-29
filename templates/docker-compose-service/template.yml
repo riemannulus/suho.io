@@ -1,0 +1,45 @@
+$schema: 'https://moonrepo.dev/schemas/template.json'
+
+id: 'docker-compose-service'
+title: 'New Docker Compose Service'
+description: |
+  Scaffolds Docker Compose service configurations for a new app.
+  Creates both development and production compose files.
+
+destination: 'server/{{ appName }}'
+
+variables:
+  appName:
+    type: 'string'
+    required: true
+    prompt: 'App name (kebab-case, e.g., "my-app")?'
+    
+  imageName:
+    type: 'string'
+    required: true
+    prompt: 'Docker image name (e.g., "suho-my-app")?'
+    default: 'suho-{{ appName }}'
+    
+  port:
+    type: 'number'
+    required: true
+    prompt: 'Application port?'
+    default: 3000
+    
+  domain:
+    type: 'string'
+    required: false
+    prompt: 'Production subdomain (e.g., "api" for api.yourdomain.com)?'
+    default: '{{ appName }}'
+    
+  needsDatabase:
+    type: 'boolean'
+    required: false
+    prompt: 'Does this app need a database?'
+    default: false
+    
+  needsRedis:
+    type: 'boolean'
+    required: false
+    prompt: 'Does this app need Redis?'
+    default: false

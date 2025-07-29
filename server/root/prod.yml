@@ -1,0 +1,19 @@
+# Root app production configuration
+services:
+  root-prod:
+    image: ${DOCKER_USERNAME:-suho}/suho-root:${ROOT_IMAGE_TAG:-latest}
+    container_name: root-prod
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.root.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.root.entrypoints=websecure"
+      - "traefik.http.routers.root.tls=true"
+      - "traefik.http.routers.root.tls.certresolver=letsencrypt"
+      - "traefik.http.services.root.loadbalancer.server.port=3000"
+    profiles:
+      - prod

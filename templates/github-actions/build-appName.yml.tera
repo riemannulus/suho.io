@@ -1,0 +1,87 @@
+name: Build {{ appName | pascal_case }} App
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - '{{ appPath }}/**'
+{%- if needsPackages %}
+      - 'packages/**'
+{%- endif %}
+      - '.github/workflows/build-{{ appName }}.yml'
+      - '.github/workflows/_docker-build.yml'
+  pull_request:
+    paths:
+      - '{{ appPath }}/**'
+{%- if needsPackages %}
+      - 'packages/**'
+{%- endif %}
+      - '.github/workflows/build-{{ appName }}.yml'
+      - '.github/workflows/_docker-build.yml'
+  workflow_dispatch:
+
+jobs:
+{%- if hasTests %}
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        
+      - name: Install dependencies
+        run: bun install
+        
+      - name: Run tests
+        run: moon run {{ appName }}:test
+{%- endif %}
+
+  build:
+{%- if hasTests %}
+    needs: test
+{%- endif %}
+    uses: ./.github/workflows/_docker-build.yml
+    with:
+      app_path: {{ appPath }}
+      image_name: {{ imageName }}
+      dockerfile_path: {{ dockerfilePath }}
+      push: {% raw %}${{ github.event_name != 'pull_request' }}{% endraw %}
+    secrets:
+      DOCKER_USERNAME: {% raw %}${{ secrets.DOCKER_USERNAME }}{% endraw %}
+      DOCKER_PASSWORD: {% raw %}${{ secrets.DOCKER_PASSWORD }}{% endraw %}
+      
+  deploy:
+    needs: build
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: {% raw %}${{ secrets.DEPLOY_HOST }}{% endraw %}
+          username: {% raw %}${{ secrets.DEPLOY_USER }}{% endraw %}
+          key: {% raw %}${{ secrets.DEPLOY_SSH_KEY }}{% endraw %}
+          script: |
+            cd {% raw %}${{ secrets.DEPLOY_PATH }}{% endraw %}
+            git pull origin {% raw %}${{ github.ref_name }}{% endraw %}
+            
+            # Update image tag in compose file
+            export {{ appName | snake_case | upper }}_IMAGE_TAG="{% raw %}${{ needs.build.outputs.image_tag }}{% endraw %}"
+            
+            # Deploy based on branch
+            if [ "{% raw %}${{ github.ref_name }}{% endraw %}" = "main" ]; then
+              docker compose --profile prod pull
+              docker compose --profile prod up -d {{ appName }}
+            else
+              docker compose --profile dev pull
+              docker compose --profile dev up -d {{ appName }}
+            fi
+            
+            # Health check
+            sleep 10
+            docker compose ps {{ appName }}

@@ -1,0 +1,19 @@
+# Root app development configuration
+services:
+  root-dev:
+    build:
+      context: ../..
+      dockerfile: apps/root/Dockerfile
+    container_name: root-dev
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.root.rule=Host(`localhost`)"
+      - "traefik.http.routers.root.entrypoints=web"
+      - "traefik.http.services.root.loadbalancer.server.port=3000"
+    profiles:
+      - dev

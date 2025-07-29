@@ -1,0 +1,82 @@
+# {{ appName | pascal_case }} production configuration
+services:
+  {{ appName }}-prod:
+    image: ${DOCKER_USERNAME:-suho}/{{ imageName }}:${{'${' }}{{ appName | snake_case | upper }}_IMAGE_TAG:-latest}
+    container_name: {{ appName }}-prod
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+{%- if needsDatabase %}
+      - DATABASE_URL=postgresql://postgres:${{'${' }}{{ appName | snake_case | upper }}_DB_PASSWORD}@{{ appName }}-db-prod:5432/{{ appName | snake_case }}
+{%- endif %}
+{%- if needsRedis %}
+      - REDIS_URL=redis://{{ appName }}-redis-prod:6379
+{%- endif %}
+    networks:
+      - web
+{%- if needsDatabase or needsRedis %}
+      - {{ appName }}
+{%- endif %}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.{{ appName }}.rule=Host(`{{ domain }}.${DOMAIN}`)"
+      - "traefik.http.routers.{{ appName }}.entrypoints=websecure"
+      - "traefik.http.routers.{{ appName }}.tls=true"
+      - "traefik.http.routers.{{ appName }}.tls.certresolver=letsencrypt"
+      - "traefik.http.services.{{ appName }}.loadbalancer.server.port={{ port }}"
+    profiles:
+      - prod
+{%- if needsDatabase or needsRedis %}
+    depends_on:
+{%- if needsDatabase %}
+      - {{ appName }}-db-prod
+{%- endif %}
+{%- if needsRedis %}
+      - {{ appName }}-redis-prod
+{%- endif %}
+{%- endif %}
+
+{%- if needsDatabase %}
+  {{ appName }}-db-prod:
+    image: postgres:16-alpine
+    container_name: {{ appName }}-db-prod
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${{'${' }}{{ appName | snake_case | upper }}_DB_PASSWORD}
+      - POSTGRES_DB={{ appName | snake_case }}
+    volumes:
+      - {{ appName }}_db_prod:/var/lib/postgresql/data
+    networks:
+      - {{ appName }}
+    profiles:
+      - prod
+{%- endif %}
+
+{%- if needsRedis %}
+  {{ appName }}-redis-prod:
+    image: redis:7-alpine
+    container_name: {{ appName }}-redis-prod
+    restart: unless-stopped
+    command: redis-server --requirepass ${{'${' }}{{ appName | snake_case | upper }}_REDIS_PASSWORD}
+    volumes:
+      - {{ appName }}_redis_prod:/data
+    networks:
+      - {{ appName }}
+    profiles:
+      - prod
+{%- endif %}
+
+{%- if needsDatabase or needsRedis %}
+networks:
+  {{ appName }}:
+    driver: bridge
+
+volumes:
+{%- if needsDatabase %}
+  {{ appName }}_db_prod:
+{%- endif %}
+{%- if needsRedis %}
+  {{ appName }}_redis_prod:
+{%- endif %}
+{%- endif %}

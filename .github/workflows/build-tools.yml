@@ -1,0 +1,62 @@
+name: Build Tools App
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'apps/tools/**'
+      - 'packages/**'
+      - '.github/workflows/build-tools.yml'
+      - '.github/workflows/_docker-build.yml'
+  pull_request:
+    paths:
+      - 'apps/tools/**'
+      - 'packages/**'
+      - '.github/workflows/build-tools.yml'
+      - '.github/workflows/_docker-build.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: ./.github/workflows/_docker-build.yml
+    with:
+      app_path: apps/tools
+      image_name: suho-tools
+      push: ${{ github.event_name != 'pull_request' }}
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      
+  deploy:
+    needs: build
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            cd ${{ secrets.DEPLOY_PATH }}
+            git pull origin ${{ github.ref_name }}
+            
+            # Update image tag in compose file
+            export TOOLS_IMAGE_TAG="${{ needs.build.outputs.image_tag }}"
+            
+            # Deploy based on branch
+            if [ "${{ github.ref_name }}" = "main" ]; then
+              docker compose --profile prod pull
+              docker compose --profile prod up -d tools
+            else
+              docker compose --profile dev pull
+              docker compose --profile dev up -d tools
+            fi
+            
+            # Health check
+            sleep 10
+            docker compose ps tools

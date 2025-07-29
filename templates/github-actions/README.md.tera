@@ -1,0 +1,83 @@
+# {{ appName | pascal_case }} App CI/CD
+
+This workflow builds and deploys the {{ appName }} application.
+
+## Workflow: `build-{{ appName }}.yml`
+
+### Triggers
+- Push to `main` or `develop` branches
+- Pull requests
+- Manual workflow dispatch
+
+### Jobs
+{%- if hasTests %}
+1. **Test**: Runs the test suite using `moon run {{ appName }}:test`
+2. **Build**: Builds Docker image and pushes to registry
+3. **Deploy**: Deploys to dev/prod environment based on branch
+{%- else %}
+1. **Build**: Builds Docker image and pushes to registry  
+2. **Deploy**: Deploys to dev/prod environment based on branch
+{%- endif %}
+
+### Environment Variables
+- `{{ appName | snake_case | upper }}_IMAGE_TAG`: Docker image tag for deployment
+
+### Docker Image
+- Registry: Docker Hub
+- Image name: `{{ imageName }}`
+- Tags:
+  - `latest` (main branch)
+  - `develop-<sha>` (develop branch)
+  - Version tags on releases
+
+### Deployment
+- **Development** (`develop` branch): Deploys with dev profile
+- **Production** (`main` branch): Deploys with prod profile
+
+## Adding to Docker Compose
+
+Add the following to your `server/{{ appName }}/dev.yml`:
+
+```yaml
+services:
+  {{ appName }}-dev:
+    image: ${DOCKER_USERNAME:-suho}/{{ imageName }}:${{'${' }}{{ appName | snake_case | upper }}_IMAGE_TAG:-latest}
+    container_name: {{ appName }}-dev
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.{{ appName }}.rule=Host(`{{ appName }}.localhost`)"
+      - "traefik.http.routers.{{ appName }}.entrypoints=web"
+      - "traefik.http.services.{{ appName }}.loadbalancer.server.port=3000"
+    profiles:
+      - dev
+```
+
+And to `server/{{ appName }}/prod.yml`:
+
+```yaml
+services:
+  {{ appName }}-prod:
+    image: ${DOCKER_USERNAME:-suho}/{{ imageName }}:${{'${' }}{{ appName | snake_case | upper }}_IMAGE_TAG:-latest}
+    container_name: {{ appName }}-prod
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.{{ appName }}.rule=Host(`{{ appName }}.${DOMAIN}`)"
+      - "traefik.http.routers.{{ appName }}.entrypoints=websecure"
+      - "traefik.http.routers.{{ appName }}.tls=true"
+      - "traefik.http.routers.{{ appName }}.tls.certresolver=letsencrypt"
+      - "traefik.http.services.{{ appName }}.loadbalancer.server.port=3000"
+    profiles:
+      - prod
+```
+
+Don't forget to include these files in `server/compose.yml`!

@@ -1,0 +1,112 @@
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'server/**'
+      - 'compose.yml'
+      - '.github/workflows/deploy-infrastructure.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prod
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    env:
+      DEPLOY_ENV: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'prod' || 'dev') }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Validate compose files
+        run: |
+          # Validate main compose file
+          docker compose -f compose.yml config > /dev/null
+          
+          # Validate server compose files
+          docker compose -f server/compose.yml config > /dev/null
+          
+          echo "✅ All compose files are valid"
+          
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -e
+            
+            cd ${{ secrets.DEPLOY_PATH }}
+            
+            # Pull latest changes
+            git pull origin ${{ github.ref_name }}
+            
+            # Create .env file if secrets are available
+            cat > .env << EOF
+            DOMAIN=${{ secrets.DOMAIN }}
+            LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }}
+            TRAEFIK_AUTH=${{ secrets.TRAEFIK_AUTH }}
+            EOF
+            
+            # Deploy infrastructure based on environment
+            echo "🚀 Deploying ${{ env.DEPLOY_ENV }} infrastructure..."
+            
+            # Stop existing services
+            docker compose --profile ${{ env.DEPLOY_ENV }} down
+            
+            # Pull latest images
+            docker compose --profile ${{ env.DEPLOY_ENV }} pull
+            
+            # Start services
+            docker compose --profile ${{ env.DEPLOY_ENV }} up -d
+            
+            # Wait for services to be healthy
+            sleep 15
+            
+            # Show service status
+            docker compose --profile ${{ env.DEPLOY_ENV }} ps
+            
+            # Check Traefik logs
+            docker compose logs traefik --tail=20
+            
+            echo "✅ Deployment completed successfully!"
+            
+      - name: Health check
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            cd ${{ secrets.DEPLOY_PATH }}
+            
+            # Check if Traefik is running
+            if docker compose ps traefik | grep -q "Up"; then
+              echo "✅ Traefik is running"
+            else
+              echo "❌ Traefik is not running"
+              docker compose logs traefik --tail=50
+              exit 1
+            fi
+            
+            # Check network connectivity
+            if docker network ls | grep -q "web"; then
+              echo "✅ Web network exists"
+            else
+              echo "❌ Web network not found"
+              exit 1
+            fi
