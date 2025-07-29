@@ -88,7 +88,7 @@ jobs:
             docker compose --profile ${{ env.DEPLOY_ENV }} ps
             
             # Check Traefik logs
-            docker compose logs traefik --tail=20
+            docker compose logs traefik-${{ env.DEPLOY_ENV }} --tail=20
             
             echo "✅ Deployment completed successfully!"
             
@@ -102,11 +102,11 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
             
             # Check if Traefik is running
-            if docker compose ps traefik | grep -q "Up"; then
+            if docker compose ps traefik-${{ env.DEPLOY_ENV }} | grep -q "Up"; then
               echo "✅ Traefik is running"
             else
               echo "❌ Traefik is not running"
-              docker compose logs traefik --tail=50
+              docker compose logs traefik-${{ env.DEPLOY_ENV }} --tail=50
               exit 1
             fi
             
