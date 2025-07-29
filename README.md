@@ -1,5 +1,8 @@
 # suho.io
 
+[![Deploy](https://github.com/riemannulus/suho.io/actions/workflows/deploy-infrastructure.yml/badge.svg)](https://github.com/riemannulus/suho.io/actions/workflows/deploy-infrastructure.yml)
+[![Sync](https://github.com/riemannulus/suho.io/actions/workflows/gitops-sync.yml/badge.svg)](https://github.com/riemannulus/suho.io/actions/workflows/gitops-sync.yml)
+
 개인 도메인 `suho.io`와 모든 서브도메인(`*.suho.io`)에 대한 애플리케이션 및 서비스 관리 저장소입니다.
 
 ## 🏗️ 아키텍처

@@ -1,4 +1,5 @@
 # tools.suho.io
+[![Build](https://github.com/riemannulus/suho.io/actions/workflows/build-tools.yml/badge.svg)](https://github.com/riemannulus/suho.io/actions/workflows/build-tools.yml)
 
 A collection of useful web tools for me.
 

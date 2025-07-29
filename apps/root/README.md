@@ -1,5 +1,7 @@
 # bun-react-tailwind-template
 
+[![Build](https://github.com/riemannulus/suho.io/actions/workflows/build-root.yml/badge.svg)](https://github.com/riemannulus/suho.io/actions/workflows/build-root.yml)
+
 To install dependencies:
 
 ```bash
