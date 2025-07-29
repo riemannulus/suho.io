@@ -60,6 +60,7 @@ jobs:
             DOMAIN=${{ secrets.DOMAIN }}
             LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }}
             TRAEFIK_AUTH=${{ secrets.TRAEFIK_AUTH }}
+            DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
             EOF
             
             # Deploy infrastructure based on environment
