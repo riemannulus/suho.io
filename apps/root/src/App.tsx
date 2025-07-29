@@ -1,30 +1,26 @@
-import { APITester } from "./APITester";
 import "./index.css";
-
-import logo from "./logo.svg";
-import reactLogo from "./react.svg";
+import msyuImage from "./MSYU.png";
 
 export function App() {
   return (
-    <div className="max-w-7xl mx-auto p-8 text-center relative z-10">
-      <div className="flex justify-center items-center gap-8 mb-8">
-        <img
-          src={logo}
-          alt="Bun Logo"
-          className="h-24 p-6 transition-all duration-300 hover:drop-shadow-[0_0_2em_#646cffaa] scale-120"
-        />
-        <img
-          src={reactLogo}
-          alt="React Logo"
-          className="h-24 p-6 transition-all duration-300 hover:drop-shadow-[0_0_2em_#61dafbaa] animate-[spin_20s_linear_infinite]"
-        />
+    <div className="min-h-screen bg-white flex flex-col justify-center relative overflow-hidden">
+      {/* Background Character Image */}
+      <div 
+        className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-40 md:opacity-50"
+        style={{
+          backgroundImage: `url(${msyuImage})`,
+          backgroundPosition: 'center center',
+          backgroundSize: 'contain',
+          maxWidth: '100%'
+        }}
+      />
+      
+      {/* Main Content */}
+      <div className="relative z-10 text-center px-4 mt-[-20vh] sm:mt-[-25vh] md:mt-[-30vh]">
+        <h1 className="pixel-text text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold text-black select-none">
+          suho.io
+        </h1>
       </div>
-
-      <h1 className="text-5xl font-bold my-4 leading-tight">Bun + React</h1>
-      <p>
-        Edit <code className="bg-[#1a1a1a] px-2 py-1 rounded font-mono">src/App.tsx</code> and save to test HMR
-      </p>
-      <APITester />
     </div>
   );
 }
