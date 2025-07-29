@@ -1,0 +1,21 @@
+# Tools production configuration
+services:
+  tools-prod:
+    build:
+      context: ../..
+      dockerfile: apps/tools/Dockerfile
+    container_name: tools
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.tools.rule=Host(`tools.${DOMAIN}`)"
+      - "traefik.http.routers.tools.entrypoints=websecure"
+      - "traefik.http.routers.tools.tls=true"
+      - "traefik.http.routers.tools.tls.certresolver=letsencrypt"
+      - "traefik.http.services.tools.loadbalancer.server.port=3000"
+    profiles:
+      - prod

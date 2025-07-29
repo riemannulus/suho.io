@@ -1,0 +1,4 @@
+# Common network definitions
+networks:
+  web:
+    external: true

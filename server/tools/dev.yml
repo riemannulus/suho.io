@@ -1,0 +1,19 @@
+# Tools development configuration
+services:
+  tools-dev:
+    build:
+      context: ../..
+      dockerfile: apps/tools/Dockerfile
+    container_name: tools
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.tools.rule=Host(`tools.localhost`)"
+      - "traefik.http.routers.tools.entrypoints=web"
+      - "traefik.http.services.tools.loadbalancer.server.port=3000"
+    profiles:
+      - dev

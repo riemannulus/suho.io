@@ -5,8 +5,7 @@ FROM oven/bun:latest AS base
 WORKDIR /app
 
 # Install moon binary
-RUN curl -fsSL https://moonrepo.dev/install/moon.sh | bash
-ENV PATH="/root/.moon/bin:$PATH"
+RUN bun install -g @moonrepo/cli
 
 #### SKELETON STAGE
 #### Scaffolds repository skeleton structures.

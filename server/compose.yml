@@ -1,0 +1,15 @@
+# Main server compose file with modular includes
+# Using merge behavior: https://docs.docker.com/reference/compose-file/merge/
+
+include:
+  # Common resources
+  - path: ./common/networks.yml
+  - path: ./common/volumes.yml
+  
+  # Traefik service configurations
+  - path: ./traefik/dev.yml
+  - path: ./traefik/prod.yml
+  
+  # Tools service configurations
+  - path: ./tools/dev.yml
+  - path: ./tools/prod.yml

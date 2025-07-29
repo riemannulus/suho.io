@@ -1,0 +1,3 @@
+# Root compose file - includes server configurations
+include:
+  - path: ./server/compose.yml
