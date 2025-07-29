@@ -177,12 +177,3 @@ CI/CD 파이프라인을 위해 다음 Secrets을 설정해야 합니다:
 ## 📄 라이선스
 
 이 프로젝트는 개인 사용을 위한 저장소입니다.
-
-## 📞 문의
-
-- 웹사이트: [suho.io](https://suho.io)
-- 이메일: your-email@suho.io
-
----
-
-이 저장소는 [Moon](https://moonrepo.dev/)과 [Bun](https://bun.sh/)을 활용한 현대적인 모노레포 구조로 관리됩니다.
