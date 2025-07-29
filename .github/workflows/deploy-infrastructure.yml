@@ -66,6 +66,12 @@ jobs:
             # Deploy infrastructure based on environment
             echo "🚀 Deploying ${{ env.DEPLOY_ENV }} infrastructure..."
             
+            # Ensure required networks exist
+            if ! docker network ls | grep -q "web"; then
+              echo "Creating web network..."
+              docker network create web
+            fi
+            
             # Stop existing services
             docker compose --profile ${{ env.DEPLOY_ENV }} down
             
