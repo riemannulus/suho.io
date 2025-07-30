@@ -4,3 +4,4 @@
 .moon/docker
 
 node_modules/
+server/gunthy/gunthy_data/
